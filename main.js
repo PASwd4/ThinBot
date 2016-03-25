@@ -4,6 +4,11 @@
 
 process.title = 'RhoBot';
 
+/*if (/^(-h|--help|-\?)$/.test(process.argv[2])) {
+console.log('Just run it,\nnodejs main.js');
+return process.exit(0);
+}*/
+
 if (process.argv[2] != undefined) {
 var cmdarg = process.argv[2];
 }
@@ -12,26 +17,26 @@ var cmdline = process.argv[3];
 }
 
 if (cmdarg == "-h" || cmdarg == "--help" || cmdarg == "-help" || cmdarg == "?" || cmdarg == "-?") {
-	console.log("\nUsage:  nodejs filename.js [-r channel]\n");
-	process.exit(1);
+console.log("\nUsage:  nodejs filename.js [-r channel]\n");
+process.exit(1);
 } else if (cmdarg == "-r") {
-	if (cmdline != undefined) {
-	var room = cmdline;
+if (cmdline != undefined) {
+var room = cmdline;
 } else {
-	console.log("\nUsage:  nodejs filename.js [-r channel]\n");
-	process.exit(1);
-	}
+console.log("\nUsage:  nodejs filename.js [-r channel]\n");
+process.exit(1);
+}
 } else if (cmdarg != undefined) {
-	console.log("\nUsage:  nodejs filename.js [-r channel]\n");
-	process.exit(1);
+console.log("\nUsage:  nodejs filename.js [-r channel]\n");
+process.exit(1);
 } else {
-	var room = "lounge";
+var room = "lounge";
 }
 
 
 
-var userName = "RhoBot";
-var tripCode = "samplepassword";
+var userName = "RondoDuo";
+var tripCode = "nosecretforyou";
 var datafile = "data.txt";
 
 var HackChat = require("hack-chat");
@@ -287,32 +292,66 @@ return start();
 
 }
 
+/**
+* Execute
+*/
+
 main();
 
+
+
+
 fs.readFile(path.join(__dirname, datafile), "utf8", function(err, data) {
-var p, i, line;
+var p, i, babbymark, factmark, line;
 if (err) {
 throw err;
 }
 var lines = data.split("\n");
 
+for (p = 0; p < lines.length; p++) {
+if (lines[p] === "~") {
+if (babbymark == null) {
+	babbymark = p;
+} else {
+	factmark = p;
+}
+}
+}
 
-for (i = 0; i < lines.length; i++) {
+for (i = babbymark + 1; i < factmark; i++) {
+//console.log(i + ": " + lines[i]);
 line = lines[i].trim();
-	if (line[0] === '#') {
-		continue;
-	}
-	if (line.length === 0) {
-		continue;
-	}
+if (line[0] === '#') {
+continue;
+}
+if (line.length === 0) {
+continue;
+}
 facts.push(line);
 
 }
 if (facts.length === 0) {
-	chatBox.content = chatBox.content + "\n" + "No truths found.";
-	return;
+//chatBox.content = chatBox.content + "\n" + "No truths found.";
+return;
 }
 
+for (i = 0; i < babbymark; i++) {
+//chatBox.pushLine(i + ": " + lines[i]);
+
+var lineb = lines[i];
+if (lineb[0] === '#') {
+continue;
+}
+if (lineb.length === 0) {
+continue;
+}
+babby.push(lineb);
+
+}
+if (babby.length === 0) {
+chatBox.pushLine("\n" + "No babbies found.");
+return;
+}
 
 var lastMessage = new Date().getTime();
 var lastQuote = new Date().getTime();
@@ -320,19 +359,20 @@ var lastQuote = new Date().getTime();
 
 
 function include(arr, obj, markIt) {
-	for (i = 0; i < arr.length; i++) {
-		if (markIt) {
-			marking = i;
-		}
-		if (arr[i] == obj) {
-			return true;
-		}
-	}
+for (i = 0; i < arr.length; i++) {
+if (markIt) {
+	marking = i;
+}
+if (arr[i] == obj) {
+	return true;
+}
+}
 }
 
 
 
 function saveSend(message, latexify) {
+//if (true) {
 lastMessage = new Date().getTime();
 if (latexify != 0) {
 message = message.replace(/~/g, "\\ ");
@@ -408,6 +448,26 @@ output = output.substring(0, output.length - 1);
 return output;
 }
 
+
+function writeUpdates() {
+for (var c = 0; c < babby.length; c++) {
+toOutput = toOutput + babby[c] + "\n";
+}
+toOutput = toOutput + "~\n"
+
+for (var c = 0; c < facts.length; c++) {
+toOutput = toOutput + facts[c] + "\n";
+}
+toOutput = toOutput + "~\n"
+
+fs.writeFile("data.txt", toOutput, function(err) {
+if (err) {
+	return console.log("### ERROR ###: \n" + err);
+}
+
+});
+}
+
 //** CHAT LISTENERS  **//
 
 ChatListen = function() {
@@ -476,7 +536,7 @@ if (secs < 10)
 
 chatBox.pushLine(irlTime() + nick + " joined.");
 //Highlight certain usernames
-if (nick === "Rhondonize" || nick === "Rhondo" || nick === userName || trip === "OHNyey") {
+if (nick === "Rhondonize" || nick === "Rhondo" || nick === userName) {
 	onlineBox.add("{bold}" + nick + "{/bold}");
 } else {
 	onlineBox.add(nick);
@@ -528,8 +588,7 @@ if (trip === "undefined") {
 
 
 toOutput = "";
-// Checks if the last message was sent in less than 4 seconds and if the message
-// Wasn't by the bot itself, as well as if controls are turned off
+
 if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 
 
@@ -563,7 +622,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 
 
 	if (text.substring(0, 6) == "~bear ") {
-		//Specify access only to certain users
+		//Exclude access to certain users
 		if (trip == "9uiLLf" || trip == "OHNyey") {
 			var Y = '• ';
 
@@ -589,7 +648,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 					}
 					bearSay[1] = bearSay[-1].substring(0, w1);
 					bearSay[3] = bearSay[-1].substring(w1, text.length);
-				} else if (bearSay[-1].length < 130) {
+				} else if (bearSay[-1].length < 120) {
 					for (var w1 = bearSay[-1].substring(0, text.length * 0.33 - 1).length; w1 > 0; w1--) {
 						if (bearSay[-1].substring(w1, w1 - 1) == " ") {
 							break;
@@ -603,7 +662,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 					bearSay[1] = bearSay[-1].substring(0, w1);
 					bearSay[2] = bearSay[-1].substring(w1, w2);
 					bearSay[3] = bearSay[-1].substring(w2, text.length);
-				} else if (bearSay[-1].length < 170) {
+				} else if (bearSay[-1].length < 160) {
 
 
 					for (var w1 = bearSay[-1].substring(0, text.length * 0.25 - 1).length; w1 > 0; w1--) {
@@ -626,7 +685,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 					bearSay[1] = bearSay[-1].substring(w1, w2);
 					bearSay[2] = bearSay[-1].substring(w2, w3);
 					bearSay[3] = bearSay[-1].substring(w3, text.length);
-				} else if (bearSay[-1].length < 210) {
+				} else if (bearSay[-1].length < 197) {
 
 					for (var w1 = bearSay[-1].substring(0, text.length * 0.2 - 1).length; w1 > 0; w1--) {
 						if (bearSay[-1].substring(w1, w1 - 1) == " ") {
@@ -687,22 +746,21 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 		}
 	}
 
+	text = text.toLowerCase();
 
 	if (text == "~invite") {
-		//Exclude access to certain users
 		if (trip === "OHNyey") {
 			return saveSend("Specify invite recipient, syntax:\n  ~invite (user)", 0);
 		} else {
 			return saveSend("I'm not letting you do that.", 2);
 		}
 	} else if (text.substring(0, 8) == "~invite ") {
-		//Exclude access to certain users
 		if (trip === "OHNyey") {
 			if (text.substring(8, text.length).trim() == "") {
 				return saveSend("Specify invite recipient, syntax: \n  ~invite (user)", 0);
 			} else {
 				saveInvite(text.substring(8, text.length).trim());
-				return saveSend("I sent an invite to user " + text.substring(8, text.length).trim() + ", if they exist.", 0);
+				return saveSend("I sent an invite to user " + text.substring(8, text.length).trim() + ".", 0);
 			}
 		} else {
 			return saveSend("I'm not letting you do that.", 0);
@@ -710,11 +768,43 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 	}
 
 
+	if (text.substring(0, 5) == "~baby") {
+
+		if (include(babby, nick, true)) {
+
+			if (babby[marking + 1].substring(0, 1) === "1") {
+				return saveSend("Did you really forget? I'm pregnant with your baby, " + nick + "!", 0);
+			} else {
+				return saveSend("No, I'm not pregnant with a baby of yours, " + nick + ".", 0);
+			}
+
+		} else {
+			return saveSend("Excuse me? I don't know you.", 0);
+		}
+	}
+
+	if (text.substring(0, 7) == "~babies") {
+		if (babby.length != 0) {
+
+			for (bl = 0; bl < babby.length; bl += 3) {
+				if (babby[bl + 1].substring(0, 1) === "1") {
+					toOutput = toOutput + babby[bl] + ", ";
+				}
+			}
+			if (toOutput === "") {
+				return saveSend("I'm not pregnant... ARE YOU CALLING ME FAT OR SOMETHING!?", 0);
+			} else {
+				return saveSend("I'm pregnant with the babies of " + toOutput + "and your mom.", 0);
+			}
+		} else {
+			return saveSend("I'm not pregnant... ARE YOU CALLING ME FAT OR SOMETHING!?", 0);
+		}
+	}
+
 	if (text == "~help" || text == "~h")
-		return saveSend("You can ask for a piece of truth (e.g. whats truth 1 )\n\n Other commands are: \n ~bear [phrase] # /afk # ~invite [user] # ~clear # ~repeat", 0);
+		return saveSend("Yeah, you do need help. \nHow about this, to cheer you up, you can ask for a piece of truth (e.g. whats truth 1 ) Other commands are: \n  ~impregnate # ~abort # ~baby # ~babies # ~child # ~children # /afk # ~invite\n  ~clear", 0);
 
 	if (text.substring(0, 8) == "~repeat ") {
-		//Exclude access to certain users
 		if (trip === "OHNyey") {
 			return saveSend(text.substring(8, text.length), 0);
 		} else {
@@ -723,11 +813,100 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 	}
 
 	if (text.substring(0, 7) == "~clear") {
-		//Exclude access to certain users
-		if (trip === "OHNyey") {
+		if (trip === "OHNyey" || nick === "Vortico") {
 			return saveSend("~\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nRhoBot: Chat cleared.", 0);
 		} else {
 			return saveSend("I'm not letting you do that.", 0);
+		}
+	}
+
+	if (text === "~children") {
+		if (babby.length != 0) {
+
+			for (bl = 0; bl < babby.length; bl += 3) {
+				if (babby[bl + 1].substring(1, 2) === "1") {
+					toOutput = toOutput + babby[bl] + ", ";
+				}
+			}
+			if (toOutput === "") {
+				return saveSend("I don't have kids!", 0);
+			} else {
+				return saveSend("I have kids with " + toOutput + "and your mom.", 0);
+			}
+		} else {
+			return saveSend("I don't have kids!", 0);
+		}
+	}
+
+	if (text == "~child") {
+
+		if (include(babby, nick, true)) {
+
+
+			if (babby[marking + 1].substring(1, 2) === "1") {
+				return saveSend("What!? Don't tell me you forgot about our child, " + nick + "!", 0);
+			} else {
+				return saveSend("We don't have any kids together.", 0);
+			}
+
+		} else {
+			return saveSend("I don't believe we have a child together...", 0);
+		}
+	}
+
+	if (text == "~impregnate") {
+		if (include(babby, nick, true)) {
+			if (babby[marking + 1].substring(0, 1) === "0") {
+
+				//console.log(babby[marking]+"'s stat was " + babby[marking+1]);
+				babby[marking + 1] = "1" + babby[marking + 1].substring(1, 3);
+				//console.log(babby[marking]+"'s stat is now " + babby[marking+1]);
+
+				//console.log(babby[marking]+"'s time was " + babby[marking+2]);
+				babby[marking + 2] = new Date().getTime();
+				//console.log(babby[marking]+"'s time is now " + babby[marking+2]);
+
+				writeUpdates();
+
+				return saveSend("\t\t\t\t\tI just got pregnant with " + nick + "'s baby!\n\t\t\t(Wait 9 days to unlock ~child commands or choose to ~abort)", 0);
+
+			} else {
+				return saveSend("I'm already pregnant with a baby of yours, " + nick + ".", 0);
+			}
+		} else {
+
+			toOutput = nick + "\n" + "100" + "\n" + new Date().getTime() + "\n";
+
+			//console.log(nick+" didn't have a stat.");
+			babby.splice(0, 0, new Date().getTime());
+			babby.splice(0, 0, "100");
+			babby.splice(0, 0, nick);
+			//console.log(babby[0]+"'s stat is now " + babby[1]);
+
+			writeUpdates();
+
+			return saveSend("\t\t\t\t\tI just got pregnant with " + nick + "'s baby!\n\t\t\t(Wait 9 days to unlock ~child commands or choose to ~abort)", 0);
+
+
+		}
+	}
+
+	if (text == "~abort") {
+		if (include(babby, nick, true)) {
+			if (babby[marking + 1].substring(0, 1) === "1") {
+				//console.log(babby[marking]+"'s stat was " + babby[marking+1]);
+				babby[marking + 1] = "0" + babby[marking + 1].substring(1, 3);
+				//console.log(babby[marking]+"'s stat is now " + babby[marking+1]);
+
+				writeUpdates();
+
+				return saveSend("" + nick + " just punched me in the stomach and our baby popped out too early!\n\t\t\t(You will no longer unlock access to ~child commands)", 0);
+
+			} else {
+				return saveSend("I'm not pregnant with a baby of yours, " + nick + ".", 0);
+			}
+		} else {
+			return saveSend("I'm sorry, have we ever even mated, " + nick + "?", 0);
 		}
 	}
 
@@ -743,18 +922,17 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 		saveSend("* I'm not taking any commands right now *", 0);
 	}
 } else if (nick === userName) {
-	//This is the bot's own message, disregarding
+	//console.log("Own message.");
 } else {
-	chatBox.pushLine("{bold}### Messages are being sent too fast, ignoring ###{/bold}");
+	chatBox.pushLine("{bold}### Messages are being requested too fast! ###{/bold}");
 }
 
 });
 
 chat.on("joining", function() {
 
-//Message to be sent on joinging a room, one after a 3000 delay after the other
 setTimeout(function() {
-	//saveSend("I'M ON",0);
+	//saveSend("I'M BACK.",0);
 	setTimeout(function() {
 		//saveSend("AND READY FOR ACTION.",0);
 	}, 3000)
@@ -762,9 +940,23 @@ setTimeout(function() {
 
 setInterval(function() {
 	chat.ping(); //KEEP ALIVE
+
+	for (bl = 0; bl < babby.length; bl += 3) {
+
+		if (babby[bl + 1].substring(0, 1) === "1") {
+			if ((babby[bl + 2] - new Date().getTime()) < -10 * 60 * 1000) {
+				saveSend("\t\t  AHHHH HOLY SHIT I'M GIVING BIRTH, AHHHHHH FUUUUCK\n \t\t\t(" + babby[bl] + " unlocked access to ~child commands!)", 0);
+				//console.log(babby[bl] + "'s stat was " + babby[bl+1]);
+				babby[bl + 1] = "01" + babby[bl + 1].substring(2, 3);
+				//console.log(babby[bl] + "'s stat is now " + babby[bl+1]);
+
+				writeUpdates();
+				break;
+			}
+		}
+	}
 }, 0.4 * 60 * 1000);
 });
 }
-//Runs the function to listen for content from the websocket through hackchat's session
 ChatListen();
 });
