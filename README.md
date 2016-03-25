@@ -8,7 +8,7 @@ A bot and client for <a href="https://github.com/AndrewBelt/hack.chat">hack.chat
 $ npm install
 $ nodejs main.js
 ```
-Note: some installations of Node.js will use the `node` commands rather than `nodejs`
+Note: some installations of Node.js will use the `node` command rather than `nodejs`
 
 ##Controls
 
