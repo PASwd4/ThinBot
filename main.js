@@ -1,7 +1,3 @@
-/// <reference path="typings/node/node.d.ts" />
-/// <reference path="typings/hack-chat/hack-chat.d.ts" />
-
-
 process.title = 'RhoBot';
 
 if (process.argv[2] != undefined) {
@@ -564,6 +560,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 
 	if (text.substring(0, 6) == "~bear ") {
 		//Specify access only to certain users
+		/* Existentialist Bear code and ascii art by https://github.com/WhiteheadV */
 		if (trip == "9uiLLf" || trip == "OHNyey") {
 			var Y = '• ';
 
