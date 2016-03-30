@@ -10,6 +10,10 @@ $ nodejs main.js
 ```
 Note: some installations of Node.js will use the `node` command rather than `nodejs`
 
+##Commands
+
+All chat commands for this BNC's bot features are currently listed in the [wiki](https://github.com/Rhondonize/Blessed-BNC/wiki).
+
 ##Controls
 
 - __Spacebar__ - Toggles the list of online users
