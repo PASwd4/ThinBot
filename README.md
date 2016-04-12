@@ -2,9 +2,13 @@
 
 A bot and client for <a href="https://github.com/AndrewBelt/hack.chat">hack.chat</a> that uses Node.js which uses the ncurses-like <a href="https://github.com/chjj/blessed">blessed</a> library.
 
+![Blessed BNC](https://raw.githubusercontent.com/Rhondonize/Blessed-BNC/master/screenshot.png)
+
 ##Usage
 
 ``` js
+$ git clone https://github.com/Rhondonize/Blessed-BNC/
+$ cd Blessed-BNC
 $ npm install
 $ nodejs main.js
 ```
