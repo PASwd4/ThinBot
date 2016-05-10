@@ -12,7 +12,14 @@ $ cd Blessed-BNC
 $ npm install
 $ nodejs main.js
 ```
+
 Note: some installations of Node.js will use the `node` command rather than `nodejs`
+
+##Issues
+
+- If you have issues when running such as `Error: Cannot find module 'blessed'`, then try installing the module manually by using `npm install blessed` while in the project's root directory. If that doesn't work, manually download <a href="https://github.com/chjj/blessed">blessed</a> and add it to the `node_modules` folder inside the project.
+
+- If the edges of boxes are letters rather than lines, you should try removing the whole project and starting over, running `npm install` and then `npm install blessed` in that order.
 
 ##Commands
 
