@@ -26,3 +26,4 @@ Some valid console commands that have been implemented into the bot are:
 - `leave` closes the websocket to the current channel.
 - `join [channel]` opens a websocket connection to the specified room, if unspecifed, will connect to ?lounge
 - `control` toggles the bouncer to be used as a bot and respond to commands of others in the channel (on by default)
+- `auto` toggles the Cleverbot-powered autoresponder (off by default)
