@@ -35,11 +35,12 @@ var room = "lounge";
 
 
 
-var userName = "RondoDuo";
-var tripCode = "nosecretforyou";
+var userName = "Rondo";
+var tripCode = "reproducehorse";
 var datafile = "data.txt";
 
 var HackChat = require("hack-chat");
+
 var d, bl, g = 0;
 var hour, mins, secs = 0;
 var marking = 0;
@@ -48,6 +49,7 @@ var sys = require("sys");
 var path = require("path");
 var control = true;
 var toOutput = "";
+var muted = [];
 var trips = [];
 var facts = [];
 var babby = [];
@@ -55,6 +57,12 @@ var afk = [];
 var afkd = -1;
 var checkBabby = 0;
 var questionRegex = /(?:tell\s+me|what\s*.?\s*s)\s+Truth\s+(?:#|number|no|n)?\s*(\d+)/i;
+
+
+var Cleverbot = require('./cleverbot');
+var CBot = new Cleverbot;
+var autoResponder = false;
+
 
 var chat = new HackChat.Session(room, (userName + "#" + tripCode));
 
@@ -276,6 +284,15 @@ if (chatIn.hidden === false) {
 			} else {
 				control = true;
 				chatBox.pushLine(irlTime() + "Bot control {bold}on{/bold}.");
+			}
+		}
+		if (cmd === 'auto') {
+			if (autoResponder) {
+				autoResponder = false;
+				chatBox.pushLine(irlTime() + "AutoResponder {bold}off{/bold}.");
+			} else {
+				autoResponder = true;
+				chatBox.pushLine(irlTime() + "AutoResponder {bold}on{/bold}.");
 			}
 		}
 		return consoleBox.clearValue();
@@ -589,11 +606,74 @@ if (trip === "undefined") {
 
 toOutput = "";
 
-if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
+
+if(text.toLowerCase() == "~control"){
+	if (trip == "OHNyey") {
+		if(control){
+			control = false;
+			return saveSend("Control off.",4);
+		}else{
+			control = true;
+			return saveSend("Control on.",4);
+		}
+	}
+}
+
+//Cleverbot AutoResponder
+
+if(text.toLowerCase() == "~auto"){
+	if (trip == "OHNyey") {
+		if(autoResponder){
+			autoResponder = false;
+			return saveSend("AutoResponder off.",4);
+		}else{
+			autoResponder = true;
+			return saveSend("AutoResponder on.",4);
+		}
+	}
+}
+
+if(autoResponder){
+var res = text.toLowerCase().replace(userName, "cleverbot")
+var directMe = (text.indexOf("@"+userName) != -1);
+var directOther = ((!directMe) && text.indexOf("@") != -1);
+var talkChance = Math.floor(Math.random() * 10) <= (text.indexOf("?") == -1 ? 1 : 4);
+if (!directOther && ( directMe || talkChance) && nick != userName) {
+	Cleverbot.prepare(function() {
+		CBot.write(res, function(response) {
+			var autoAnswer = response.message;
+			var refine = autoAnswer.replace("Cleverbot", userName);
+			refine = refine.replace("3600", "lol¡");
+			if ((refine.indexOf("Clever") == -1) && (refine.indexOf("app") == -1))
+				return saveSend(refine,0);
+		});
+	});
+}
+}
 
 
+if (muted.indexOf(nick) != -1 && nick != userName){
+
+var toMute = "";
+
+for (var muet = 0; muet < text.length; muet++){
+
+	if (text.substring(muet,muet+1)===' '){
+		toMute = toMute+" ";
+	}else if (muet%2==0){
 
 
+		toMute = toMute+"=̿̿̿̿̿̿̿̿";
+	}else{
+
+		toMute = toMute+" ̿̿̿̿̿̿̿̿";
+	}
+}
+
+
+return saveSend(toMute,0);
+
+}else if (lastMessage - new Date().getTime() < -5000 && nick != userName && control) {
 
 
 	for (g = 0; g < afk.length; g++) {
@@ -617,7 +697,6 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 	}
 
 	afkd = -1;
-
 
 
 
@@ -716,7 +795,7 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 				}
 
 
-        saveSend(
+        return saveSend(
             "    " + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y + Y +"\n"
           + "   " + Y + centerText(bearSay[0],60) + Y +"\n"
           + "  " + Y + centerText(bearSay[1],62) + Y +"\n"
@@ -739,14 +818,39 @@ if (lastMessage - new Date().getTime() < -4000 && nick != userName && control) {
 
 
 			} else {
-				saveSend("That exceeds the length of the max quote size.", 0);
+				return saveSend("That exceeds the length of the max quote size.", 0);
 			}
 		} else {
-			saveSend("I'm not letting you do that.", 2);
+			return saveSend("I'm not letting you do that.", 2);
+		}
+	}
+
+
+	if (text.trim() == "~off" && trip == "OHNyey"){
+		return saveSend("Closing.", 1);
+		process.exit();
+
+	}
+
+	if (text.substring(0, 6).trim() == "~mute" && trip == "OHNyey"){
+		if(text.substring(6,text.length).trim() != "Rhondonize" && text.substring(6,text.length).trim() != userName ){
+			muted.push(text.substring(6,text.length).trim());
+			return saveSend(text.substring(6,text.length).trim()+" has been muted.", 1);
+		}
+	}
+
+	if (text.substring(0, 8).trim() == "~unmute" && trip == "OHNyey"){
+
+		var indexOut = muted.indexOf(text.substring(8,text.length).trim());
+		if( indexOut != -1){
+			muted.splice(indexOut, 1);
+			return saveSend(text.substring(8,text.length).trim()+" has been unmuted.", 1);
+
 		}
 	}
 
 	text = text.toLowerCase();
+
 
 	if (text == "~invite") {
 		if (trip === "OHNyey") {
