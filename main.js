@@ -36,7 +36,7 @@ var room = "lounge";
 
 
 var userName = "Rondo";
-var tripCode = "reproducehorse";
+var tripCode = "nosecretsforyou!";
 var datafile = "data.txt";
 
 var HackChat = require("hack-chat");
