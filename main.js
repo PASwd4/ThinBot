@@ -634,7 +634,9 @@ if(text.toLowerCase() == "~auto"){
 	}
 }
 
-if(regularsList.indexOf(nick.toLowerCase()) == -1 && (text.indexOf("hack") != -1 || text.indexOf("facebook") != -1 || text.indexOf("instagram") != -1 || text.indexOf("snapchat") != -1 || text.indexOf("wifi pass") != -1 || text.indexOf("social media") != -1 || text.indexOf("kali") != -1 || text.indexOf("dos") != -1 || text.indexOf("loic") != -1 || text.indexOf("hoic") != -1 || text.indexOf("anon") != -1)){
+var textnb = text.toLowerCase();
+
+if(regularsList.indexOf(nick.toLowerCase()) == -1 && (textnb.indexOf("hack") != -1 || textnb.indexOf("facebook") != -1 || textnb.indexOf("instagram") != -1 || textnb.indexOf("snapchat") != -1 || textnb.indexOf("wifi pass") != -1 || textnb.indexOf("social media") != -1 || textnb.indexOf("kali") != -1 || textnb.indexOf("dos") != -1 || textnb.indexOf("loic") != -1  || textnb.indexOf("twitter") != -1 || textnb.indexOf("hoic") != -1 || textnb.indexOf("anon") != -1)){
 var res = text.toLowerCase().replace(userName, "cleverbot")
 var directMe = (text.indexOf("@"+userName) != -1);
 if (nick != userName) {
