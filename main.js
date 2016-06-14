@@ -35,8 +35,8 @@ var room = "lounge";
 
 
 
-var userName = "Rondo";
-var tripCode = "nosecretsforyou!";
+var userName = "RondoDuo";
+var tripCode = "secretstuffgoeshere";
 var datafile = "data.txt";
 
 var HackChat = require("hack-chat");
@@ -50,6 +50,7 @@ var path = require("path");
 var control = true;
 var toOutput = "";
 var muted = [];
+var regularsList = ["rhondo","notadmin","rondeau","tooty","toastystoemp","m4gnv5","asdf","minusgix","fapinterface","vvhitehead","cornbot","_0x17","bacon","rut","tbott","existentialistbear","coderrank","shrooms","overkill","nanotech","luckypants","valkyre"];
 var trips = [];
 var facts = [];
 var babby = [];
@@ -633,6 +634,23 @@ if(text.toLowerCase() == "~auto"){
 	}
 }
 
+if(regularsList.indexOf(nick.toLowerCase()) == -1 && (text.indexOf("hack") != -1 || text.indexOf("facebook") != -1 || text.indexOf("instagram") != -1 || text.indexOf("snapchat") != -1 || text.indexOf("wifi pass") != -1 || text.indexOf("social media") != -1 || text.indexOf("kali") != -1 || text.indexOf("dos") != -1 || text.indexOf("loic") != -1 || text.indexOf("hoic") != -1 || text.indexOf("anon") != -1)){
+var res = text.toLowerCase().replace(userName, "cleverbot")
+var directMe = (text.indexOf("@"+userName) != -1);
+if (nick != userName) {
+	Cleverbot.prepare(function() {
+		CBot.write(res, function(response) {
+			var autoAnswer = response.message;
+			var refine = autoAnswer.replace("Cleverbot", userName);
+			refine = refine.replace("3600", "lol¡");
+			if ((refine.indexOf("Clever") == -1) && (refine.indexOf("app") == -1))
+				return saveSend(refine,0);
+		});
+	});
+}
+}
+
+
 if(autoResponder){
 var res = text.toLowerCase().replace(userName, "cleverbot")
 var directMe = (text.indexOf("@"+userName) != -1);
@@ -917,7 +935,7 @@ return saveSend(toMute,0);
 	}
 
 	if (text.substring(0, 7) == "~clear") {
-		if (trip === "OHNyey" || nick === "Vortico") {
+		if (trip === "OHNyey") {
 			return saveSend("~\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nRhoBot: Chat cleared.", 0);
 		} else {
 			return saveSend("I'm not letting you do that.", 0);
